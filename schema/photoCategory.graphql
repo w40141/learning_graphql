@@ -1,0 +1,7 @@
+enum PhotoCategory {
+  SELFIE
+  PORTAIT
+  ACTION
+  LANDSCAPE
+  GRAPHIC
+}

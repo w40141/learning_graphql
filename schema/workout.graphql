@@ -1,0 +1,6 @@
+type Workout {
+  name: String!
+  start: DateTime!
+  end: DateTime!
+  reps: Int!
+}

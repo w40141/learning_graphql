@@ -1,0 +1,13 @@
+scalar DataTime
+
+interface AgendaItem {
+  name: String!
+  start: DateTime!
+  end: DateTime!
+}
+
+union AgendaItem = StudyGroup | Workout
+
+type Query {
+  agenda: [AgendaItem!]!
+}

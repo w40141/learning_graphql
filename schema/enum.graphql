@@ -1,0 +1,11 @@
+enum SortDirection {
+  ASCENDING
+  DESCENDING
+}
+
+enum SortablePhotoField {
+  name
+  description
+  category
+  created
+}

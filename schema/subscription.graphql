@@ -1,0 +1,4 @@
+type Subscription {
+  newPhoto(category: PhotoCategory): Photo!
+  newUser: User!
+}

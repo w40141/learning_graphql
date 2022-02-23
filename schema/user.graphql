@@ -1,0 +1,12 @@
+type User {
+  githubLogin: ID!
+  name: String
+  avator: String
+  friends: [Friendship!]!
+  postedPhotos(
+    filter: PhotoFilter
+    paging: DataPage
+    sorting: DataSort
+  ): [Photo!]!
+  inPhoto(filter: PhotoFilter, paging: DataPage, sorting: DataSort): [Photo!]!
+}

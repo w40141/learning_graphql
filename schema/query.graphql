@@ -1,0 +1,8 @@
+type Query {
+  totalPhotos: Int!
+  allPhotos(filter: PhotoFilter, paging: DataPage, sorting: DataSort): [Photo!]!
+  totalUsers: Int!
+  allUsers(paging: DataPage, sorting: DataSort): [User!]!
+  User(githubLogin: ID!): User!
+  Photo(id: ID!): Photo!
+}

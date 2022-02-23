@@ -1,0 +1,11 @@
+scalar DateTime
+
+type StudyGroup implements AgendaItem {
+  name: String!
+  start: DateTime!
+  end: DateTime!
+  participants: [User!]!
+  topic: String!
+  subject: String
+  students: [User!]!
+}
