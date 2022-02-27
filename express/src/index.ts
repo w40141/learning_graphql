@@ -1,11 +1,13 @@
-import { ApolloServer, gql } from "apollo-server-express";
+import { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import express from "express";
 import http from "http";
 import { GraphQLScalarType } from "graphql";
 import graphqlPlayMiddlewareExpress from "graphql-playground-middleware-express";
 import { readFileSync } from "fs";
+import { MongoClient } from "mongodb";
 
+require("dotenv").config();
 const typeDefs = readFileSync("./src/typeDefs.graphql", "utf-8");
 
 let _id = 0;
@@ -65,8 +67,14 @@ const tags: Array<{ photoID: string; userID: string }> = [
 
 const resolvers = {
   Query: {
-    totalPhoto: () => photos.length,
-    allPhotos: () => photos,
+    totalPhoto: (parent: any, args: any, { db }: any) =>
+      db.collection("photos").estimatedDocumentCount(),
+    allPhotos: (parent: any, args: any, { db }: any) =>
+      db.collection("photos").find().toArray(),
+    totalUsers: (parent: any, args: any, { db }: any) =>
+      db.collection("users").estimatedDocumentCount(),
+    allUsers: (parent: any, args: any, { db }: any) =>
+      db.collection("users").find().toArray(),
   },
 
   Mutation: {
@@ -117,11 +125,19 @@ const resolvers = {
 
 async function listen(port: number) {
   const app = express();
+
+  const MONGO_DB: string = process.env.DB_HOTS as string;
+  const client = new MongoClient(MONGO_DB);
+  await client.connect();
+  const db = client.db();
+  const context = { db };
+
   const httpServer = http.createServer(app);
 
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    context,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
 
@@ -132,7 +148,6 @@ async function listen(port: number) {
   );
 
   await server.start();
-
   server.applyMiddleware({ app });
 
   return new Promise((resolve, reject) => {

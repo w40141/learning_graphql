@@ -12,13 +12,15 @@
     "apollo-server-express": "^3.6.3",
     "express": "^4.17.3",
     "graphql": "^16.3.0",
-    "graphql-playground-middleware-express": "^1.7.23"
+    "graphql-playground-middleware-express": "^1.7.23",
+    "mongodb": "^4.4.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.21",
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
+    "dotenv": "^16.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "gts": "^3.1.0",
