@@ -6,6 +6,7 @@ import { GraphQLScalarType } from "graphql";
 import graphqlPlayMiddlewareExpress from "graphql-playground-middleware-express";
 import { readFileSync } from "fs";
 import { MongoClient } from "mongodb";
+import fetch from "node-fetch";
 
 require("dotenv").config();
 const typeDefs = readFileSync("./src/typeDefs.graphql", "utf-8");
@@ -122,6 +123,52 @@ const resolvers = {
     parseLiteral: (ast: any) => ast.value,
   }),
 };
+
+const requestGithubToken = (credentials) =>
+  fetch("https://github.com/login/oauth/access_token", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(credentials),
+  })
+    .then((res) => res.json())
+    .catch((error) => {
+      throw new Error("JSON.stringify(error)");
+    });
+
+const requestGithubUserAccount = (token) =>
+  fetch("https://api.github.com/user?access_token=${token}")
+    .then(toJson)
+    .catch(throwError);
+
+async function authorizedWithGithub(credentials) {
+  const { access_token } = await requestGithubToken(credentials);
+  const githubUser = await requestGithubUserAccount(access_token);
+  return { ...githubUser, access_token };
+}
+
+async function githubAuth(parent: any, { code }: any, { db }: any) {
+  const { message, access_token, avatar_url, login, name } =
+    await authorizedWithGithub({
+      client_id: "<YOUR_CLIENT_ID_HERE>",
+      client_secret: "<YOUR_CLIENT_SECRET_HERE>",
+      code,
+    });
+  if (message) {
+    throw new Error(message);
+  }
+  const latestUserInfo = {
+    name,
+    githubLogin: login,
+    githubToken: access_token,
+    avatar: avatar_url,
+  };
+  const {
+    ops: [user],
+  } = await db
+    .collection("users")
+    .replaceOne({ githubLogin: login }, latestUserInfo, { upsert: true });
+  return { user, token: access_token };
+}
 
 async function listen(port: number) {
   const app = express();

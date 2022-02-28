@@ -13,7 +13,8 @@
     "express": "^4.17.3",
     "graphql": "^16.3.0",
     "graphql-playground-middleware-express": "^1.7.23",
-    "mongodb": "^4.4.0"
+    "mongodb": "^4.4.0",
+    "node-fetch": "^3.2.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
